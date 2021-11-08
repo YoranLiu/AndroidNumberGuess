@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">NumberGuess</string>
-    <string name="ok"></string>
+    <string name="check">Check</string>
+    <string name="bingo">BINGO!!</string>
+    <string name="guess_bigger">Guess bigger</string>
+    <string name="guess_smaller">Guess smaller</string>
+    <string name="dialog_title">Result message</string>
+    <string name="ok">OK</string>
+    <string name="please_input_a_valid_number">Please input a valid number: 1~10</string>
+    <string name="please_input_a_number">Please input a number 1~10</string>
 </resources>

@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     val secretNumber = SecretNumber()
+    val TAG = MainActivity::class.java.simpleName
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,23 +26,33 @@ class MainActivity : AppCompatActivity() {
 
         //setContentView(R.layout.activity_main) // R: package_name.R
 
-        Log.d("Mainactivity", "Secret number: ${secretNumber.secret}")
+        Log.d(TAG, "Secret number: ${secretNumber.secret}")
     }
 
     fun check(view: View) {
-        val input_num = binding.edNumber.text.toString().toInt()
-        val diff = secretNumber.check_num(input_num)
-        var message = "BINGO!!"
+        var input_str = binding.edNumber.text.toString()
+        var message = getString(R.string.bingo)
 
-        if (diff < 0)
-            message = "Guess bigger"
-        else if (diff > 0)
-            message = "Guess smaller"
-        //Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        if (input_str == "")
+            message = getString(R.string.please_input_a_number)
+        else {
+            val input_num = input_str.toInt()
+            if (input_num > 10 || input_num < 1)
+                message = getString(R.string.please_input_a_valid_number)
+            else {
+                val diff = secretNumber.check_num(input_num)
+                if (diff < 0)
+                    message = getString(R.string.guess_bigger)
+                else if (diff > 0)
+                    message = getString(R.string.guess_smaller)
+                //Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+        }
         AlertDialog.Builder(this)
-            .setTitle("Result message")
+            .setTitle(getString(R.string.dialog_title))
             .setMessage(message)
-            .setPositiveButton("OK", null)
+            .setPositiveButton(getString(R.string.ok), null)
             .show()
+
     }
 }

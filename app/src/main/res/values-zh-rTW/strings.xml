@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">猜數字</string>
+    <string name="check">確認</string>
+    <string name="bingo">猜對了!!</string>
+    <string name="guess_bigger">猜大一點</string>
+    <string name="guess_smaller">猜小一點</string>
+    <string name="dialog_title">結果訊息</string>
+    <string name="ok">OK</string>
+    <string name="please_input_a_valid_number">請輸入合理範圍的數字: 1~10</string>
+    <string name="please_input_a_number">請輸入數字1~10</string>
+</resources>
