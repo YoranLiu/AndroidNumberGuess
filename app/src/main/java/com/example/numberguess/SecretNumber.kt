@@ -3,12 +3,17 @@ package com.example.numberguess
 import java.util.*
 
 class SecretNumber {
-    val secret = Random().nextInt(10) + 1
+    var secret = Random().nextInt(10) + 1
     var count = 0
 
     fun check_num(num: Int): Int {
         count++
         return num - secret
+    }
+
+    fun reset() {
+        secret = Random().nextInt(10) + 1
+        count = 0
     }
 }
 

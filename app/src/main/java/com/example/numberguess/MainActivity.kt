@@ -11,9 +11,10 @@ import com.example.numberguess.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
     val secretNumber = SecretNumber()
     val TAG = MainActivity::class.java.simpleName
-    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +54,5 @@ class MainActivity : AppCompatActivity() {
             .setMessage(message)
             .setPositiveButton(getString(R.string.ok), null)
             .show()
-
     }
 }

@@ -8,5 +8,12 @@
     <string name="dialog_title">結果訊息</string>
     <string name="ok">OK</string>
     <string name="please_input_a_valid_number">請輸入合理範圍的數字: 1~10</string>
-    <string name="please_input_a_number">請輸入數字1~10</string>
+    <string name="please_input_a_number">請輸入數字1~10:</string>
+    <string name="guess_counter">猜的次數:</string>
+    <string name="are_you_sure_to_replay">你確定要重玩嗎?</string>
+    <string name="replay_confirm">重玩確認</string>
+    <string name="no">否</string>
+    <string name="yes">是</string>
+    <string name="title_activity_material">猜數字</string>
+    <string name="excellent_result">超神的! 數字就是</string>
 </resources>
