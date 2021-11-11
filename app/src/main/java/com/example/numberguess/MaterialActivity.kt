@@ -1,25 +1,16 @@
 package com.example.numberguess
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.EditText
-import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.numberguess.databinding.ActivityMaterialBinding
-import com.example.numberguess.databinding.ContentMaterialBinding
 import kotlinx.android.synthetic.main.content_material.*
-import org.w3c.dom.Text
 
 class MaterialActivity : AppCompatActivity() {
-//    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMaterialBinding
 
     val secretNumber = SecretNumber()
@@ -27,31 +18,47 @@ class MaterialActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Log.d(TAG, "onCreate: ")
         binding = ActivityMaterialBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-
         Log.d(TAG, "Secret number: ${secretNumber.secret}")
+        
+        val rec_nickname = getSharedPreferences("guess_member_list", MODE_PRIVATE)
+            .getString("REC_NICKNAME", null)
+        val rec_counter = getSharedPreferences("guess_member_list", MODE_PRIVATE)
+            .getInt("REC_COUNTER", -1)
 
-//        val navController = findNavController(R.id.nav_host_fragment_content_material)
-//        appBarConfiguration = AppBarConfiguration(navController.graph)
-//        setupActionBarWithNavController(navController, appBarConfiguration)
+        Log.d(TAG, "guess_member_list: " + rec_nickname + "/" + rec_counter)
 
         binding.fab.setOnClickListener { view ->
-            AlertDialog.Builder(this)
-                .setTitle(getString(R.string.replay_confirm))
-                .setMessage(getString(R.string.are_you_sure_to_replay))
-                .setPositiveButton(getString(R.string.yes), {dialog, which ->
-                    secretNumber.reset()
-                    ed_number.setText("")
-                    counter.setText(secretNumber.count.toString())
-                    Log.d(TAG, "Secret number: ${secretNumber.secret}")
-                })
-                .setNeutralButton(getString(R.string.no), null)
-                .show()
+            replay()
         }
     }
+
+    private fun replay() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.replay_confirm))
+            .setMessage(getString(R.string.are_you_sure_to_replay))
+            .setPositiveButton(getString(R.string.yes), { dialog, which ->
+                secretNumber.reset()
+                ed_number.setText("")
+                counter.setText(secretNumber.count.toString())
+                Log.d(TAG, "Secret number: ${secretNumber.secret}")
+            })
+            .setNeutralButton(getString(R.string.no), null)
+            .show()
+    }
+
+    // register -> result contracts -> start activity result
+    var resultLauncher = // need to registerForActivityResult before onStart of the Activity
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result->
+            if (result.resultCode == RESULT_OK) {
+                val nick = result.data?.getStringExtra("NICKNAME")
+                Log.d(TAG, "result data: " + nick)
+                replay()
+            }
+        }
 
     fun check(view: View) {
 //        var input_str = binding.edNumber.text.toString()
@@ -59,6 +66,7 @@ class MaterialActivity : AppCompatActivity() {
 
         val input_str = ed_number.text.toString()
         var message = getString(R.string.bingo)
+        var is_corrected = false
 
         // fool-proof: input can not be empty
         if (input_str == "")
@@ -80,22 +88,26 @@ class MaterialActivity : AppCompatActivity() {
                 else if (diff > 0)
                     message = getString(R.string.guess_smaller)
                 else {
+                    is_corrected = true
                     if (secretNumber.count < 3)
                         message = getString(R.string.excellent_result) + secretNumber.secret.toString()
                 }
                 //Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
         }
+        Log.d(TAG, "check: is corrected: $is_corrected")
+
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.dialog_title))
             .setMessage(message)
-            .setPositiveButton(getString(R.string.ok), null)
+            .setPositiveButton(getString(R.string.ok), {dialog, which ->
+                if (is_corrected) {
+                    val intent = Intent(this, RecordActivity::class.java)
+                    intent.putExtra("Counter", secretNumber.count)
+                    //startActivity(intent)
+                    resultLauncher.launch(intent)
+                }
+            })
             .show()
     }
-
-//    override fun onSupportNavigateUp(): Boolean {
-//        val navController = findNavController(R.id.nav_host_fragment_content_material)
-//        return navController.navigateUp(appBarConfiguration)
-//                || super.onSupportNavigateUp()
-//    }
 }
